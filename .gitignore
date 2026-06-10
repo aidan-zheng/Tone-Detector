@@ -1,0 +1,5 @@
+.env
+.DS_Store
+tone-detect/
+__pycache__/
+*.pyc
