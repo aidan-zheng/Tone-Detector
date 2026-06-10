@@ -2,80 +2,86 @@
 <html>
     <head>
         <title>Tone Detector</title>
+        <style>
+            body {
+              display: flex;            /* Enables Flexbox */
+              justify-content: center;  /* Centers horizontally */
+              align-items: center;      /* Centers vertically */
+              min-height: 100vh;            /* Sets height to full viewport height */
+              margin: 0;                /* Removes default browser margins */
+              padding:20px;              /* Adds padding around content */
+              flex-direction: column;   /* Aligns items in column */
+            }
+            select.custom-shape {
+              border-radius: 10px; /* Rounded corners */
+              border: 2px solid #484848; /* Custom border */
+              padding: 5px 10px; /* Custom padding for size */
+              /*width: 100px; /* Custom width */
+              background-color: #f9f9f9; /* Custom background color */
+              cursor: pointer; /* Changes cursor to pointer on hover */
+    
+            }
+            textarea.custom-shape {
+              border-radius: 10px; /* Rounded corners */
+              border: 2px solid #484848; /* Custom border */
+              padding: 10px; /* Custom padding for size */
+              width: 400px; /* Custom width */
+              height:400px; /* Custom height */
+              background-color: #f9f9f9; /* Custom background color */
+              
+           }
+           button.custom-shape {
+              border-radius: 10px; /* Rounded corners */
+              border: 2px solid #484848; /* Custom border */
+              padding: 5px 10px; /* Custom padding for size */
+              /*width: 150px; /* Custom width */
+              background-color: #f9f9f9; /* Custom background color */
+              cursor: pointer; /* Changes cursor to pointer on hover */
+              transition: background-color 0.2s ease; /* Smooth transition for background color */
+            }
+            button.custom-shape:active {
+              background-color: #d3d3d3; /* Change background color when clicked */
+           }
+    
+           #title-header{
+            font-family: 'Times New Roman';
+            /*font-size:*/
+           }
+    
+           #screen1{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+           }
+    
+           #screen2{
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+           }
+    
+           #result{
+            background-color: #f9f9f9; /* Custom background color */
+            border-radius: 10px; /* Rounded corners */
+            border: 2px solid #484848; /* Custom border */
+            display: none; /* Hide by default */
+            padding: 20px; /* Custom padding */
+           }
+    
+           #loading{
+            display:none;
+            font-size: 18px;
+            color: white;
+           }
+    
+          </style>
     </head>
-    <style>
-        body {
-          display: flex;            /* Enables Flexbox */
-          justify-content: center;  /* Centers horizontally */
-          align-items: center;      /* Centers vertically */
-          min-height: 100vh;            /* Sets height to full viewport height */
-          margin: 0;                /* Removes default browser margins */
-          padding:20px;              /* Adds padding around content */
-          flex-direction: column;   /* Aligns items in column */
-        }
-        select.custom-shape {
-          border-radius: 10px; /* Rounded corners */
-          border: 2px solid #484848; /* Custom border */
-          padding: 5px 10px; /* Custom padding for size */
-          /*width: 100px; /* Custom width */
-          background-color: #f9f9f9; /* Custom background color */
-          cursor: pointer; /* Changes cursor to pointer on hover */
 
-        }
-        textarea.custom-shape {
-          border-radius: 10px; /* Rounded corners */
-          border: 2px solid #484848; /* Custom border */
-          padding: 10px; /* Custom padding for size */
-          width: 400px; /* Custom width */
-          height:400px; /* Custom height */
-          background-color: #f9f9f9; /* Custom background color */
-          
-       }
-       button.custom-shape {
-          border-radius: 10px; /* Rounded corners */
-          border: 2px solid #484848; /* Custom border */
-          padding: 5px 10px; /* Custom padding for size */
-          /*width: 150px; /* Custom width */
-          background-color: #f9f9f9; /* Custom background color */
-          cursor: pointer; /* Changes cursor to pointer on hover */
-          transition: background-color 0.2s ease; /* Smooth transition for background color */
-        }
-        button.custom-shape:active {
-          background-color: #d3d3d3; /* Change background color when clicked */
-       }
-
-       #screen1{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-       }
-
-       #screen2{
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-       }
-
-       #result{
-        background-color: #f9f9f9; /* Custom background color */
-        border-radius: 10px; /* Rounded corners */
-        border: 2px solid #484848; /* Custom border */
-        display: none; /* Hide by default */
-        padding: 20px; /* Custom padding */
-       }
-
-       #loading{
-        display:none;
-        font-size: 18px;
-        color: white;
-       }
-
-      </style>
     <body style="background-color:rgb(153, 125, 164);"></Bodystyle>  
         <div id="screen1">
-            <h1 style="font-family: 'Times New Roman'">Tone Detector</h1>
+            <h1 id="title-header">Tone Detector</h1>
             <textarea class="custom-shape" id="text"  placeholder="Insert email here: "></textarea>
 
             <select class="custom-shape" id="recipient" style="margin-top: 5px">
@@ -175,4 +181,3 @@
         }
     </script>
 </html>
-ls -la ~/Pictures/ | grep "^d"
