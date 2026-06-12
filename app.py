@@ -47,6 +47,9 @@ def analyze():
             model="gemini-2.5-flash",
             contents=prompt
         )
+        
+        raw = response.text.strip()
+        print("RAW RESPONSE:", raw)
 
         # Clean response and parse JSON
         raw = response.text.strip()

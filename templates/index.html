@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Tone Detector</title>
         <style>
+            html {
+              margin: 0;
+              padding: 0;
+              height: 100%;
+            }
             body {
-              display: flex;            /* Enables Flexbox */
-              justify-content: center;  /* Centers horizontally */
-              align-items: center;      /* Centers vertically */
-              min-height: 100vh;            /* Sets height to full viewport height */
-              margin: 0;                /* Removes default browser margins */
-              padding:20px;              /* Adds padding around content */
-              flex-direction: column;   /* Aligns items in column */
+              display: flex; /* Enables Flexbox */
+              justify-content: center; /* Centers horizontally */
+              align-items: center; /* Centers vertically */
+              min-height: 100vh; /* Sets height to full viewport height */
+              height: 80%; 
+              margin: 0; /* Removes default browser margins */
+              /*padding:10px; /* Adds padding around content */
+              flex-direction: column; /* Aligns items in column */
+              box-sizing: border-box;
             }
             select.custom-shape {
               border-radius: 10px; /* Rounded corners */
@@ -25,10 +33,12 @@
               border-radius: 10px; /* Rounded corners */
               border: 2px solid #484848; /* Custom border */
               padding: 10px; /* Custom padding for size */
-              width: 400px; /* Custom width */
-              height:400px; /* Custom height */
+              width: 70%; /* Custom width */
+              height: 80%; /* Custom height */
               background-color: #f9f9f9; /* Custom background color */
-              
+              z-index: 1;
+              opacity: 0.8;
+              resize: unset; /* Prevents resizing */
            }
            button.custom-shape {
               border-radius: 10px; /* Rounded corners */
@@ -45,21 +55,38 @@
     
            #title-header{
             font-family: 'Times New Roman';
-            /*font-size:*/
+            font-size: clamp(60px, 15vw, 200px); /* min, preferred, max */            position: absolute;
+            z-index:0;
+            top: -6%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0.67;
+            color: #60635d;
+            margin:0;
            }
     
            #screen1{
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 90%;
+            height:80%;
             gap: 8px;
+            position: relative;
+            top:50px
            }
     
-           #screen2{
+           #screen2 {
             display: none;
             flex-direction: column;
             align-items: center;
             gap: 8px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            width: 80%;
            }
     
            #result{
@@ -75,7 +102,28 @@
             font-size: 18px;
             color: white;
            }
-    
+
+           .selection-types{
+            font-family: 'Times New Roman';
+            font-size: 20px;
+            color: #534f4f;
+            align-self: flex-start;
+            margin:0;
+           }
+
+            .input-group{
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .controls-row {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-end;
+                gap: 50px;
+            }
+
           </style>
     </head>
 
@@ -84,27 +132,35 @@
             <h1 id="title-header">Tone Detector</h1>
             <textarea class="custom-shape" id="text"  placeholder="Insert email here: "></textarea>
 
-            <select class="custom-shape" id="recipient" style="margin-top: 5px">
-                <option value = "friend">Friend</option>
-                <option value = "boss">Boss</option>
-                <option value = "coworker">CoWorker</option>
-                <option value = "subordinate">Subordinate</option>
-            </select>
-
-            <select class="custom-shape" id="goal" style="margin-top: 5px">
-                <option value="get a response">Get a Response</option>
-                <option value="set a boundary">Set a Boundary</option>
-                <option value="ask for something">Ask for Something</option>
-                <option value="de-escalate tension">De-escalate Tension</option>
-                <option value="negotiate">Negotiate</option>
-            </select>
-
-            <button class="custom-shape" onclick="analyze()" style="margin-top: 5px">Analyze Tone</button>
+            <div class="controls-row">
+                <div class="input-group">
+                    <h3 class="selection-types">Recipient:</h3>
+                    <select class="custom-shape" id="recipient">
+                        <option value="friend">Friend</option>
+                        <option value="boss">Boss</option>
+                        <option value="coworker">CoWorker</option>
+                        <option value="subordinate">Subordinate</option>
+                    </select>
+                </div>
+            
+                <div class="input-group">
+                    <h3 class="selection-types">Goal:</h3>
+                    <select class="custom-shape" id="goal">
+                        <option value="get a response">Get a Response</option>
+                        <option value="set a boundary">Set a Boundary</option>
+                        <option value="ask for something">Ask for Something</option>
+                        <option value="de-escalate tension">De-escalate Tension</option>
+                        <option value="negotiate">Negotiate</option>
+                    </select>
+                </div>
+            
+                <button class="custom-shape" style="margin-top:5px" onclick="analyze()">Analyze Tone</button>
+            </div>
         </div>
 
         <div id="loading">Analyzing... ⏳</div>
         
-        <div class="result" id="screen2">
+        <div id="screen2">
             <h1>Your Results</h1>
             <div id="result">
                 <h2> Overall Tone: <span id="tone"></span></h2>
@@ -133,40 +189,52 @@
         document.getElementById("screen1").style.display = "none";
         document.getElementById("loading").style.display = "block";
 
-        const response = await fetch("/analyze", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({text, recipient, goal})
-        });
-        const data = await response.json();
+            try{
+            const response = await fetch("/analyze", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({text, recipient, goal})
+            });
+            const data = await response.json();
+            console.log("DATA:", data);
 
-        document.getElementById("tone").textContent = data.overallTone;
-        document.getElementById("score").textContent = data.score;
-        document.getElementById("summary").textContent = data.summary;
-        document.getElementById("result").style.display = "block";
+            document.getElementById("tone").textContent = data.overallTone;
+            document.getElementById("score").textContent = data.score;
+            document.getElementById("summary").textContent = data.summary;
+            document.getElementById("result").style.display = "block";
 
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("screen2").style.display = "flex";
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("screen2").style.display = "flex";
 
 
 
-        //Flagged phrases
-        let flaggedHTML = "<h3>Flagged Phrases:</h3>";
-        data.flaggedPhrases.forEach(item=> {
-            flaggedHTML += `<p><strong>"${item.phrase}"</strong> - ${item.reason}</p>`;
-        });
-        document.getElementById("flagged").innerHTML = flaggedHTML;
+            //Flagged phrases
+            if(data.flaggedPhrases){
+                let flaggedHTML = "<h3>Flagged Phrases:</h3>";
+                data.flaggedPhrases.forEach(item=> {
+                    flaggedHTML += `<p><strong>"${item.phrase}"</strong> - ${item.reason}</p>`;
+                });
+                document.getElementById("flagged").innerHTML = flaggedHTML;
+            }
 
-        let suggestionsHTML = "<h3>Suggestions:</h3>";
-        data.suggestions.forEach(item => {
-            suggestionsHTML += `
-                <p>❌ <del>${item.original}</del></p>
-                <p>✅ ${item.rewrite}</p>
-            `;
-        });
-        document.getElementById("suggestions").innerHTML = suggestionsHTML;
+            if(data.suggestions){
+                let suggestionsHTML = "<h3>Suggestions:</h3>";
+                data.suggestions.forEach(item => {
+                    suggestionsHTML += `
+                        <p>❌ <del>${item.original}</del></p>
+                        <p>✅ ${item.rewrite}</p>
+                    `;
+                });
+                document.getElementById("suggestions").innerHTML = suggestionsHTML;
+            }
+        } catch (error) {
+            alert("Error: " + error.message);
+            // Hide loading message and show the form again
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("screen1").style.display = "flex";
+        }
     }
 
     function goBack() {
