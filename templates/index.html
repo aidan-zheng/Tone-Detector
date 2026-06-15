@@ -36,7 +36,6 @@
               width: 70%; /* Custom width */
               height: 80%; /* Custom height */
               background-color: #f9f9f9; /* Custom background color */
-              z-index: 1;
               resize: unset; /* Prevents resizing */
            }
            button.custom-shape {
@@ -67,7 +66,7 @@
            }
     
            #screen1{
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             width: 90%;
@@ -77,23 +76,47 @@
             top:50px
            }
     
-           #screen2 {
-            display: none;
+           #screen2{
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            width: 99%;
+            height:98%;
+            gap: 2px;
+            border-radius: 10px;
+           }
+
+           #screen2-a{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background-color: #dddddd;
+            border-radius: 10px;
+            padding: 20px;
+            width: 50%;
+           }
+
+           #screen2-b {
+            display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
             background-color: #f9f9f9;
             border-radius: 10px;
             padding: 20px;
-            width: 80%;
+            width: 50%;
            }
     
            #result{
             background-color: #f9f9f9; /* Custom background color */
             border-radius: 10px; /* Rounded corners */
             border: 2px solid #484848; /* Custom border */
-            display: none; /* Hide by default */
+            display: flex; /* Hide by default */
             padding: 20px; /* Custom padding */
+            overflow-y: auto;
+            height:90%;
+            width:90%;
            }
     
            #loading{
@@ -124,7 +147,7 @@
             }
 
             #dynamic-background{
-                background: linear-gradient(300deg, #a1a1a1, #294528, #548352);
+                background: linear-gradient(300deg, #a1a1a1, #667c67, #3c583d, #294528, #3c5e3c, #548352);
                 width: 100%;
                 height: 100vh;
                 display: flex;
@@ -152,7 +175,7 @@
         <div id="dynamic-background">
             <div id="screen1">
                 <h1 id="title-header">Tone Detector</h1>
-                <textarea class="custom-shape" id="text"  placeholder="Insert email here: "></textarea>
+                <textarea class="custom-shape" id="text"  placeholder="Insert text here: "></textarea>
 
                 <div class="controls-row">
                     <div class="input-group">
@@ -183,24 +206,39 @@
             <div id="loading">Analyzing... ⏳</div>
             
             <div id="screen2">
-                <h1>Your Results</h1>
-                <div id="result">
-                    <h2> Overall Tone: <span id="tone"></span></h2>
-                    <h2>Friendliness Score: <span id="score"></span>/10</h2>
-                    <p id="summary"></p>
-                    <div id="flagged"></div>
-                    <div id="suggestions"></div>
+                <div id="screen2-a">
+                    <h1>Original Text</h1>
+                    <textarea style="resize: unset; height:90%; width:90%; border-radius:10px; padding:10px;" id="original-text" placeholder="Insert text here: "></textarea>
+                    <button class="custom-shape" onclick="analyze()">Re-Analyze</button>
                 </div>
-                <button class="custom-shape" onclick="goBack()">⬅ Analyze Another</button>
+
+                <div id="screen2-b">
+                    <h1>Your Results</h1>
+                    <div id="result">
+                        <h2> Overall Tone: <span id="tone"></span></h2>
+                        <h2>Friendliness Score: <span id="score"></span>/10</h2>
+                        <p id="summary"></p>
+                        <div id="flagged"></div>
+                        <div id="suggestions"></div>
+                    </div>
+                    <button class="custom-shape" onclick="goBack()">⬅ Analyze Another</button>
+                </div>
             </div>
         </div>
     </body>
 
     <script>
     async function analyze(){
-        const text = document.getElementById("text").value;
+        let text;
+    
+        if (document.getElementById("screen2").style.display === "flex") {
+            text = document.getElementById("original-text").value;
+        } else {
+            text = document.getElementById("text").value;
+        }
+
         if (!text.trim()) {
-            alert("Please enter some text to first.");
+            alert("Please enter some text first.");
             return;
         }
 
@@ -222,6 +260,7 @@
             });
             const data = await response.json();
             console.log("DATA:", data);
+            document.getElementById("original-text").value = text;
 
             document.getElementById("tone").textContent = data.overallTone;
             document.getElementById("score").textContent = data.score;
@@ -230,6 +269,8 @@
 
             document.getElementById("loading").style.display = "none";
             document.getElementById("screen2").style.display = "flex";
+            document.getElementById("screen2-a").style.display = "flex";
+            document.getElementById("screen2-b").style.display = "flex";
 
 
 
@@ -262,6 +303,8 @@
 
     function goBack() {
             document.getElementById("screen2").style.display = "none";
+            document.getElementById("screen2-a").style.display = "none";
+            document.getElementById("screen2-b").style.display = "none";
             document.getElementById("loading").style.display = "none";
             document.getElementById("screen1").style.display = "flex";
 
