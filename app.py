@@ -29,10 +29,11 @@ def analyze():
 
         Analyze the tone of this message and respond only in JSON with:
         - overallTone: one word describing the overall tone
-        - score: a number from 0 to 10 indicating the intensity of the tone
+        - score: a number from 0 to 10 where 0 is extremely hostile/unfriendly and 10 is extremely warm/friendly.
         - flaggedPhrases: array of objects with "phrase" and "reason" but make the reason concise (1-3 words)
         - suggestions: array of objects with "original" and "rewrite"
         - summary: a two sentenced summary IN ENGLISH of how this rewrite will land
+        - rewrite: a rewritten version of the message that is more effective and appropriate for the recipient and goal. Follow the suggestions proposed in the suggestions array.
 
         Recipient: {recipient}
         Goal: {goal}
@@ -52,7 +53,6 @@ def analyze():
         print("RAW RESPONSE:", raw)
 
         # Clean response and parse JSON
-        raw = response.text.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1]
             if raw.startswith("json"):
