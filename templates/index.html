@@ -286,7 +286,6 @@
             const data = await response.json();
 
             // After fetch completes:
-            clearInterval(interval);
             progressNum.textContent = "100%";
             progressBar.value = 100;
 
@@ -340,6 +339,11 @@
             // Hide loading message and show the form again
             document.getElementById("loading").style.display = "none";
             document.getElementById("screen1").style.display = "flex";
+        }
+
+        finally {
+            clearInterval(interval);
+            progressBar.style.display = "none";
         }
     }
 
