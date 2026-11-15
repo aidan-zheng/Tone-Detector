@@ -302,6 +302,7 @@
                 document.getElementById("screen2").style.display = "flex";
                 document.getElementById("screen2-a").style.display = "flex";
                 document.getElementById("screen2-b").style.display = "flex";
+                progressBar.style.display = "none";
             }, 800);
 
 
@@ -337,13 +338,13 @@
         } catch (error) {
             alert("Error: " + error.message);
             // Hide loading message and show the form again
+            progressBar.style.display = "none";
             document.getElementById("loading").style.display = "none";
             document.getElementById("screen1").style.display = "flex";
         }
 
         finally {
             clearInterval(interval);
-            progressBar.style.display = "none";
         }
     }
 
